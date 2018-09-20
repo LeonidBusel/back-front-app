@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {DragDropContext} from 'react-dnd';
+import shallowCompare from 'react-addons-shallow-compare';
 import HTML5Backend from 'react-dnd-html5-backend';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -19,6 +20,10 @@ class MainPage extends Component {
         addItem({title: itemTitle || 'unknown', done: false});
 
     };
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
+    }
 
     render() {
         return (

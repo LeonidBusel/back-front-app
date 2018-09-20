@@ -1,5 +1,6 @@
 import React, {Component} from "react";
-import { findDOMNode } from 'react-dom';
+import {findDOMNode} from 'react-dom';
+import shallowCompare from 'react-addons-shallow-compare';
 import {DragSource, DropTarget} from 'react-dnd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -31,6 +32,10 @@ class ToDoItem extends Component {
         const {changeStatus, index} = this.props;
         changeStatus({index: index});
     };
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
+    }
 
     render() {
         const {connectDragSource, connectDropTarget, title, done} = this.props;
@@ -128,7 +133,7 @@ ToDoItem.propTypes = {
     title: PropTypes.string.isRequired,
     done: PropTypes.bool,
     index: PropTypes.number.isRequired,
-    id: PropTypes.string.isRequired,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 export default connect(null, mapDispatchToProps)(DropTarget("item", itemTarget, collectTarget)(DragSource("item", itemSource, collectSource)(ToDoItem)));
