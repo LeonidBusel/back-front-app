@@ -8,11 +8,11 @@ const initialState = {
 };
 
 export default handleActions({
-    [actions.syncList]: (state, {payload}) => ({
+    [actions.syncList]: (state) => ({
         ...state,
         needSync: false,
     }),
-    [actions.needSyncList]: (state, {payload}) => ({
+    [actions.needSyncList]: (state) => ({
         ...state,
         needSync: true,
     }),
@@ -21,6 +21,10 @@ export default handleActions({
         lastUpdate: payload
     }),
     [actions.setList]: (state, { payload }) => ({
+        ...state,
+        list: payload
+    }),
+    [actions.sortList]: (state, { payload }) => ({
         ...state,
         list: payload
     }),

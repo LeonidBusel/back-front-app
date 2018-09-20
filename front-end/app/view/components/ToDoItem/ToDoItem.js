@@ -3,6 +3,7 @@ import { findDOMNode } from 'react-dom';
 import {DragSource, DropTarget} from 'react-dnd';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
 import * as toDoListActions from 'actions/toDoListActions';
 import {ToDoControl} from 'components';
 
@@ -18,7 +19,6 @@ class ToDoItem extends Component {
         if (itemTitle === this.props.title) return;
 
         const {editItem, index} = this.props;
-        console.log("edit item");
         editItem({title: itemTitle, index: index});
     };
 
@@ -31,7 +31,6 @@ class ToDoItem extends Component {
         const {changeStatus, index} = this.props;
         changeStatus({index: index});
     };
-
 
     render() {
         const {connectDragSource, connectDropTarget, title, done} = this.props;
@@ -58,8 +57,6 @@ class ToDoItem extends Component {
 
 const itemSource = {
     beginDrag(props) {
-        console.log(`begin drag:`);
-        console.log(props);
         return {
             index: props.index,
             id: props.id,
@@ -67,65 +64,51 @@ const itemSource = {
         };
     },
 
-    endDrag(props, monitor) {
-        const item = monitor.getItem();
-        const dropResult = monitor.getDropResult();
-
-        if (dropResult && dropResult.id !== item.id) {
-            console.log(`end drag, dropResultId: ${dropResult.id}, item.id: ${item.id}`);
-            // props.removeCard(item.index);
-        }
+    endDrag(props) {
+        props.sortListUpdate(); //обновляем измененный список в store и на сервере
     }
 };
 
 const itemTarget = {
-
     hover(props, monitor, component) {
         const dragIndex = monitor.getItem().index;
         const hoverIndex = props.index;
 
-        // Don't replace items with themselves
         if (dragIndex === hoverIndex) {
             return;
         }
 
-        // Determine rectangle on screen
         const hoverBoundingRect = findDOMNode(component).getBoundingClientRect();
 
-        // Get vertical middle
         const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
 
-        // Determine mouse position
         const clientOffset = monitor.getClientOffset();
 
-        // Get pixels to the top
         const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
-        // Only perform the move when the mouse has crossed half of the items height
-        // When dragging downwards, only move when the cursor is below 50%
-        // When dragging upwards, only move when the cursor is above 50%
-
-        // Dragging downwards
         if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
             return;
         }
 
-        // Dragging upwards
         if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
             return;
         }
 
-        // Time to actually perform the action
         props.moveItem(dragIndex, hoverIndex);
 
         monitor.getItem().index = hoverIndex;
     }
 };
 
-function collect(connect, monitor) {
+function collectSource(connect) {
     return {
-        connectDragSource: connect.dragSource(),
-        isDragging: monitor.isDragging()
+        connectDragSource: connect.dragSource()
+    };
+}
+
+function collectTarget(connect) {
+    return {
+        connectDropTarget: connect.dropTarget()
     };
 }
 
@@ -135,6 +118,17 @@ function mapDispatchToProps(dispatch) {
     }, dispatch);
 }
 
-export default connect(null, mapDispatchToProps)(DropTarget("item", itemTarget, connect => ({
-    connectDropTarget: connect.dropTarget()
-}))(DragSource("item", itemSource, collect)(ToDoItem)));
+ToDoItem.propTypes = {
+    list: PropTypes.array,
+    editItem: PropTypes.func.isRequired,
+    removeItem: PropTypes.func.isRequired,
+    changeStatus: PropTypes.func.isRequired,
+    moveItem: PropTypes.func.isRequired,
+    sortListUpdate: PropTypes.func.isRequired,
+    title: PropTypes.string.isRequired,
+    done: PropTypes.bool,
+    index: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
+};
+
+export default connect(null, mapDispatchToProps)(DropTarget("item", itemTarget, collectTarget)(DragSource("item", itemSource, collectSource)(ToDoItem)));

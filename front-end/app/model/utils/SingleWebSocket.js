@@ -20,13 +20,12 @@ export default class SingleWebSocket {
 
     handleSocket() {
         this.ws.onopen = () => {
-            console.log('websocket is connected ...');
+            console.log('websocket is connected...');
 
             if (this.store.getState().toDoListReducer.needSync)
                 this.store.dispatch(toDoListActions.syncList());
             else
                 this.ws.send(JSON.stringify({type: 'GET_LIST'}));
-
         };
 
         this.ws.onmessage = (msg) => {

@@ -52,7 +52,7 @@ class WebSocketServer {
                 }
             });
 
-            ws.on('close', function (msg) {
+            ws.on('close', function () {
                 console.log("some connection close...");
             })
         })

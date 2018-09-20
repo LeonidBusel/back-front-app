@@ -14,5 +14,4 @@ httpServer.createServer();
 httpServer.clientRoutes();*/
 
 let wsServer = new WebSocketServer(config['ws-server']);
-
 wsServer.handleWebSocket();

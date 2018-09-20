@@ -3,7 +3,7 @@ import {DragDropContext} from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {ToDoList, ToDoControl} from "components";
+import {ToDoList, ToDoControl} from 'components';
 import * as toDoListActions from 'actions/toDoListActions';
 
 import './mainPage.less';

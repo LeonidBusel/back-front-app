@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import shallowCompare from 'react-addons-shallow-compare';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
 import {ToDoItem} from 'components';
 import * as toDoListActions from 'actions/toDoListActions';
 
@@ -11,7 +12,7 @@ class ToDoList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            list: props.list
+            list: props.list || []
         }
     }
 
@@ -26,10 +27,18 @@ class ToDoList extends Component {
         })
     };
 
+    sortListUpdate = () => {
+        if(JSON.stringify(this.props.list) !== JSON.stringify(this.state.list)) {
+            const {sortList} = this.props;
+            sortList(this.state.list);
+        }
+    };
+
+
     componentWillReceiveProps(nextProps, nextState) {
         if(JSON.stringify(nextProps.list) !== JSON.stringify(this.state.list)) {
             this.setState({
-                list: nextProps.list
+                list: nextProps.list || []
             });
         }
     }
@@ -42,7 +51,7 @@ class ToDoList extends Component {
     render() {
        // const {list = []} = this.props;
         const items = this.state.list.map((item, i) => {
-            return <ToDoItem key={item.id} index={i} id={item.id} title={item.title} done={item.done} moveItem={this.moveItem}/>
+            return <ToDoItem key={item.id} index={i} id={item.id} title={item.title} done={item.done} moveItem={this.moveItem} sortListUpdate={this.sortListUpdate}/>
         });
 
         return (
@@ -64,5 +73,10 @@ function mapDispatchToProps(dispatch) {
         ...toDoListActions
     }, dispatch);
 }
+
+ToDoList.propTypes = {
+    list: PropTypes.array,
+    sortList: PropTypes.func.isRequired
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ToDoList);

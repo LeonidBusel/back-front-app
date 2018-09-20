@@ -15,14 +15,12 @@ export default function configureStore(initialState = {}) {
         applyMiddleware(...middlewares),
     ];
 
-    let store = createStore(reducers , initialState, compose(...enhancers));
+    let store = createStore(reducers, initialState, compose(...enhancers));
 
     const socket = new SingleWebSocket(store);
     socket.createConnection();
 
     sagaMiddleware.run(rootSagas);
-
-
 
     return store;
 }
