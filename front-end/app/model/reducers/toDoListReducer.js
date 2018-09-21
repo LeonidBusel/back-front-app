@@ -30,7 +30,7 @@ export default handleActions({
     }),
     [actions.addItem]: (state, { payload }) => ({
         ...state,
-        list: [Object.assign(payload, {id: '_' + Math.random().toString(36).substr(2, 9)}), ...state.list]
+        list: [payload, ...state.list]
     }),
     [actions.editItem]: (state, { payload }) => ({
         ...state,

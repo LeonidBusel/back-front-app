@@ -17,7 +17,7 @@ class MainPage extends Component {
 
     addItem = (itemTitle) => {
         const {addItem} = this.props;
-        addItem({title: itemTitle || 'unknown', done: false});
+        addItem({title: itemTitle || 'unknown', done: false, id: '_' + Math.random().toString(36).substr(2, 9)});
 
     };
 

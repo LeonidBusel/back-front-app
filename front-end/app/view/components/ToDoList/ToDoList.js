@@ -49,7 +49,6 @@ class ToDoList extends Component {
 
 
     render() {
-       // const {list = []} = this.props;
         const items = this.state.list.map((item, i) => {
             return <ToDoItem key={item.id} index={i} id={item.id} title={item.title} done={item.done} moveItem={this.moveItem} sortListUpdate={this.sortListUpdate}/>
         });
