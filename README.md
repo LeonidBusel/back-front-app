@@ -1,5 +1,3 @@
-# Тестовое задание **IT-TERRA**
-
 ## Table of Contents
 
 * [Run Back-end](#run-back-end)
@@ -10,6 +8,7 @@
 Перейти в папку back-end и выполнить:
 
 ``` 
+
 npm install
 node app.js 
 ```
@@ -19,6 +18,7 @@ node app.js
 Перейти в папку front-end и выполнить:
 
 ``` 
+
 npm install
 npm run leave
 ```
